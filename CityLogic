@@ -1,0 +1,156 @@
+# Manuale utente e installazione
+
+## 1. Descrizione del progetto
+
+**CityLogic** è un motore di simulazione urbana ispirato a una versione semplificata di *SimCity*. L’obiettivo del progetto è modellare una città tramite oggetti, risorse, infrastrutture, politiche e regole di simulazione, con particolare attenzione alla struttura object-oriented del dominio.
+
+La città è rappresentata da una griglia logica configurabile. Nella configurazione attuale la mappa è una griglia **40 × 40**. L’utente può costruire edifici e infrastrutture, avanzare la simulazione tramite tick, osservare le metriche della città e salvare o caricare una partita.
+
+Le principali metriche gestite sono:
+
+* budget;
+* popolazione;
+* energia prodotta e consumata;
+* inquinamento;
+* felicità;
+* salute;
+* costi di manutenzione;
+* obiettivi raggiunti.
+
+Ogni tick aggiorna lo stato della città. Il motore verifica la connessione alla rete stradale, bilancia l’energia, calcola inquinamento, salute, felicità, entrate, manutenzione, eventi casuali e obiettivi.
+
+## 2. Funzionalità principali
+
+L’applicazione permette di:
+
+* creare una nuova partita;
+* costruire strade, residenze, industrie, centrali energetiche, parchi, ospedali, caserme dei pompieri e strutture di intrattenimento;
+* demolire edifici;
+* avanzare la simulazione con il pulsante **Next Tick**;
+* scegliere tra due politiche cittadine: **Green Policy** e **Industrial Policy**;
+* visualizzare overlay della griglia, come inquinamento, copertura antincendio, felicità locale e salute locale;
+* gestire eventi casuali, come incendi e pandemie;
+* completare obiettivi progressivi;
+* salvare e caricare lo stato della città tramite file JSON.
+
+La simulazione include anche regole di funzionamento: gli edifici devono essere collegati alla rete stradale principale per essere attivi, il budget deve essere sufficiente per costruire e il consumo energetico non deve superare la produzione disponibile.
+
+## 3. Requisiti di esecuzione
+
+Per compilare ed eseguire il progetto sono necessari:
+
+* **Java JDK 21**;
+* **Maven 3.8+**;
+* sistema operativo compatibile con JavaFX;
+* IDE consigliato: IntelliJ IDEA, Eclipse o Visual Studio Code.
+
+Le dipendenze principali sono gestite tramite Maven:
+
+| Libreria        | Uso                            |
+| --------------- | ------------------------------ |
+| JavaFX Controls | Interfaccia grafica            |
+| JavaFX FXML     | Caricamento viste FXML         |
+| Jackson         | Salvataggio e caricamento JSON |
+| JUnit 5         | Unit testing                   |
+
+Il progetto non utilizza database. La persistenza avviene tramite file JSON.
+
+## 4. Installazione ed esecuzione
+
+Clonare il repository o estrarre la ZIP:
+
+```bash
+git clone <URL_DEL_REPOSITORY>
+cd city-main
+```
+
+oppure:
+
+```bash
+unzip city-main.zip
+cd city-main
+```
+
+Verificare Java:
+
+```bash
+java -version
+javac -version
+```
+
+Verificare Maven:
+
+```bash
+mvn -version
+```
+
+Compilare il progetto:
+
+```bash
+mvn clean compile
+```
+
+Eseguire l’applicazione:
+
+```bash
+mvn clean javafx:run
+```
+
+All’avvio viene mostrata la schermata iniziale, dalla quale è possibile creare una nuova partita, caricare un salvataggio o uscire dal gioco.
+
+## 5. Salvataggio e caricamento
+
+Il salvataggio viene gestito tramite `SaveManager`.
+
+Il pulsante **Salva Partita** genera il file:
+
+```text
+savegame.json
+```
+
+Il file contiene:
+
+* dimensione della griglia;
+* budget;
+* popolazione;
+* tick corrente;
+* felicità e salute globali;
+* policy attiva;
+* edifici costruiti;
+* posizione e stato degli edifici;
+* obiettivo corrente.
+
+Il pulsante **Carica Partita** cerca `savegame.json` nella directory di esecuzione e ricostruisce lo stato della città.
+
+## 6. Test
+
+I test automatici sono scritti con **JUnit 5**.
+
+Per eseguirli:
+
+```bash
+mvn test
+```
+
+I test presenti verificano principalmente:
+
+* calcolo di entrate e manutenzione;
+* bilanciamento energetico;
+* diffusione dell’inquinamento;
+* connessione alla rete stradale.
+
+Il report automatico dei test viene generato da Maven nella cartella:
+
+```text
+target/surefire-reports
+```
+
+## 7. File di configurazione
+
+Il progetto usa tre file JSON principali:
+
+* `config.json`: dimensione della griglia e budget iniziale;
+* `buildings.json`: definizione degli edifici, costi, componenti e valori di gioco;
+* `objectives.json`: obiettivi progressivi e ricompense.
+
+Questa struttura permette di modificare molti parametri della simulazione senza cambiare il codice Java.
